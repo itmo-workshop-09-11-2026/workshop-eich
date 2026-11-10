@@ -14,15 +14,15 @@ class PackTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             os.chdir(tmp)
             try:
-                Path('site/blocked').mkdir(parents=True)
-                Path('site/index.html').write_text('hello')
+                Path('blocked').mkdir()
+                Path('index.html').write_text('hello')
                 Path('shop.zip').write_bytes(b'previous archive')
                 original = os.scandir
                 def scandir(path):
                     if Path(path).name == 'blocked': raise PermissionError('access denied')
                     return original(path)
                 with patch('os.scandir', side_effect=scandir):
-                    with self.assertRaises(PermissionError): pack(Path('site'))
+                    with self.assertRaises(PermissionError): pack('.')
                 self.assertEqual(Path('shop.zip').read_bytes(), b'previous archive')
             finally:
                 os.chdir(previous)

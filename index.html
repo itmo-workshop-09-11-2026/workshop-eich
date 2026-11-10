@@ -51,28 +51,36 @@
       <div id="product-grid" class="product-grid"></div>
     </section>
 
-    <section class="cart" aria-label="Корзина">
-      <h2>Корзина</h2>
-      <ul id="cart-list" class="cart-list"></ul>
-      <p id="cart-empty" class="cart-empty">Корзина пуста</p>
-
-      <div class="promo">
-        <label class="field">
-          <span>Промокод (скидка 10%)</span>
-          <input type="text" id="promo-input" placeholder="Например, LAPTOP10">
-        </label>
-        <button type="button" id="promo-apply">Применить</button>
-        <button type="button" id="promo-cancel" hidden>Отменить промокод</button>
-        <p id="promo-status" role="status"></p>
-      </div>
-
-      <p id="cart-total" class="cart-total" role="status" aria-live="polite">Итого: 0 ₽</p>
-    </section>
+    <!-- Нижняя плашка с краткой сводкой по корзине -->
+    <div class="cart-bar" id="cart-bar" role="status" aria-live="polite">
+      <span id="cart-bar-summary">Корзина пуста</span>
+      <button type="button" id="open-cart" class="open-cart-button">Корзина</button>
+    </div>
   </main>
 
   <dialog id="product-dialog" class="product-dialog" aria-label="Карточка товара">
     <button type="button" id="dialog-close" class="dialog-close" aria-label="Закрыть карточку товара">×</button>
     <div id="dialog-content" class="dialog-content"></div>
+  </dialog>
+
+  <dialog id="cart-dialog" class="cart-dialog" aria-labelledby="cart-dialog-title">
+    <button type="button" id="cart-dialog-close" class="dialog-close" aria-label="Закрыть корзину">×</button>
+    <h2 id="cart-dialog-title">Корзина</h2>
+    <ul id="cart-list" class="cart-list"></ul>
+    <p id="cart-empty" class="cart-empty">Корзина пуста</p>
+
+    <div class="promo">
+      <label class="field">
+        <span>Промокод (скидка 10%)</span>
+        <input type="text" id="promo-input" placeholder="Например, LAPTOP10">
+      </label>
+      <button type="button" id="promo-apply">Применить</button>
+      <button type="button" id="promo-cancel" hidden>Отменить промокод</button>
+      <p id="promo-status" role="status"></p>
+    </div>
+
+    <p id="cart-total" class="cart-total" role="status" aria-live="polite">Итого: 0 ₽</p>
+    <button type="button" id="cart-clear">Очистить корзину</button>
   </dialog>
 
   <footer class="site-footer">

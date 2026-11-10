@@ -421,6 +421,8 @@ function renderCart() {
   const emptyMessage = document.querySelector("#cart-empty");
   const totalLine = document.querySelector("#cart-total");
   const promoCancelButton = document.querySelector("#promo-cancel");
+  const bar = document.querySelector("#cart-bar");
+  const barSummary = document.querySelector("#cart-bar-summary");
 
   list.textContent = "";
   for (const item of cart) {
@@ -434,12 +436,38 @@ function renderCart() {
   promoCancelButton.hidden = promo === null;
 
   const baseTotal = computeBaseTotal();
+  const itemCount = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  // Итог с учётом скидки для popup корзины.
+  let displayTotal = baseTotal;
   if (promo === PROMO_CODE && hasItems) {
-    const total = Math.round(baseTotal * (1 - PROMO_DISCOUNT));
+    displayTotal = Math.round(baseTotal * (1 - PROMO_DISCOUNT));
     totalLine.textContent =
-      "Итого: " + formatPrice(total) + " (скидка 10%, без скидки — " + formatPrice(baseTotal) + ")";
+      "Итого: " + formatPrice(displayTotal) + " (скидка 10%, без скидки — " + formatPrice(baseTotal) + ")";
   } else {
     totalLine.textContent = "Итого: " + formatPrice(baseTotal);
+  }
+
+  // Краткая сводка на нижней плашке: плашка плавно выдвигается при появлении
+  // товаров и так же плавно уезжает вниз, когда корзина снова пуста.
+  if (hasItems) {
+    barSummary.textContent =
+      "В корзине: " + itemCount + " шт. на " + formatPrice(displayTotal);
+    if (bar.hidden) {
+      bar.hidden = false;
+      // Двойной requestAnimationFrame: даём браузеру применить скрытое
+      // состояние, чтобы переход transform/opacity сработал.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => bar.classList.add("visible"));
+      });
+    } else {
+      bar.classList.add("visible");
+    }
+  } else if (!bar.hidden) {
+    bar.classList.remove("visible");
+    setTimeout(() => {
+      if (cart.length === 0) bar.hidden = true;
+    }, 320);
   }
 }
 
@@ -493,6 +521,23 @@ function init() {
   });
 
   // Промокод (этап 8).
+  // Popup корзины и нижняя плашка.
+  document.querySelector("#open-cart").addEventListener("click", () => {
+    document.querySelector("#cart-dialog").showModal();
+  });
+  document.querySelector("#cart-dialog-close").addEventListener("click", () => {
+    document.querySelector("#cart-dialog").close();
+  });
+  document.querySelector("#cart-clear").addEventListener("click", () => {
+    cart = [];
+    promo = null;
+    saveState();
+    document.querySelector("#promo-status").textContent = "";
+    document.querySelector("#promo-input").value = "";
+    renderCatalog();
+    renderCart();
+  });
+
   document.querySelector("#promo-apply").addEventListener("click", applyPromo);
   document.querySelector("#promo-cancel").addEventListener("click", cancelPromo);
 

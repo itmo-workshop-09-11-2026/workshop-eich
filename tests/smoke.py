@@ -12,28 +12,28 @@ def call(args, cwd):
 with tempfile.TemporaryDirectory(prefix='shop-test-') as tmp:
     work=Path(tmp)/'project'
     shutil.copytree(ROOT,work,ignore=shutil.ignore_patterns('.git','bin','obj','*.zip','__pycache__'))
-    (work/'site/products.json').write_text('[]')
-    (work/'site/old.txt').write_text('old')
+    (work/'products.json').write_text('[]')
+    (work/'old.txt').write_text('old')
     call(CMD+['--pack'],work)
     with zipfile.ZipFile(work/'shop.zip') as z:
         assert {'index.html','styles.css','app.js','assets/shop.svg','products.json','old.txt'}<=set(z.namelist())
         assert all(not n.startswith(('site/','../','/')) for n in z.namelist())
         assert all(not n.endswith(('.go','.java','.cs','.csproj','.py')) for n in z.namelist())
-    (work/'site/old.txt').unlink()
+    (work/'old.txt').unlink()
     call(CMD+['--pack'],work)
     with zipfile.ZipFile(work/'shop.zip') as z: assert 'old.txt' not in z.namelist()
     previous=(work/'shop.zip').read_bytes()
-    index=(work/'site/index.html').read_bytes()
-    (work/'site/index.html').unlink()
+    index=(work/'index.html').read_bytes()
+    (work/'index.html').unlink()
     assert subprocess.run(CMD+['--pack'],cwd=work,capture_output=True).returncode!=0
     assert previous==(work/'shop.zip').read_bytes()
-    (work/'site/index.html').write_bytes(index)
+    (work/'index.html').write_bytes(index)
     if os.name!='nt':
         (work/'outside.txt').write_text('must not leak')
-        (work/'site/link.txt').symlink_to(work/'outside.txt')
+        (work/'link.txt').symlink_to(work/'outside.txt')
         assert subprocess.run(CMD+['--pack'],cwd=work,capture_output=True).returncode!=0
         assert previous==(work/'shop.zip').read_bytes()
-        (work/'site/link.txt').unlink()
+        (work/'link.txt').unlink()
     print('PASS ZIP: resources, JSON, replacement, failed publication preservation, symlink rejection (Unix)',flush=True)
     if '--pack-only' in sys.argv: sys.exit(0)
     with socket.socket() as s:
@@ -60,7 +60,7 @@ with tempfile.TemporaryDirectory(prefix='shop-test-') as tmp:
                 try: urllib.request.urlopen(base+path)
                 except urllib.error.HTTPError as e: assert e.code==404,(path,e.code)
                 else: raise AssertionError('Exposed unexpected file: '+path)
-            (work/'site/version.txt').write_text('version2')
+            (work/'version.txt').write_text('version2')
             with urllib.request.urlopen(base+'/version.txt') as r: assert r.read()==b'version2'
             print('PASS HTTP: root, MIME, assets, JSON, 404, source isolation, changed file',flush=True)
         finally:
