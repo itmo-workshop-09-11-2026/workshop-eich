@@ -324,7 +324,7 @@ button {
   margin-top: 8px;
 }
 
-.product-actions button[type="button"]:first-child {
+.add-button {
   flex-grow: 1;
   padding: 10px;
   border: none;
@@ -333,8 +333,39 @@ button {
   color: #ffffff;
 }
 
-.product-actions button[type="button"]:first-child:hover {
+.add-button:hover {
   background: var(--accent-dark);
+}
+
+/* Выбор количества вместо кнопки «Добавить» у товара в корзине */
+.qty-selector {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px 6px;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  background: var(--card-bg);
+}
+
+.qty-selector button {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.qty-selector button:hover {
+  background: var(--accent-dark);
+}
+
+.qty-selector span {
+  font-weight: 600;
 }
 
 .favorite-button {

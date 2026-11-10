@@ -350,7 +350,7 @@ function buildProductCard(product) {
   favoriteButton.setAttribute("aria-label", isFavorite ? "Убрать " + product.name + " из избранного" : "Добавить " + product.name + " в избранное");
   favoriteButton.addEventListener("click", () => toggleFavorite(product.id));
 
-  actions.append(addButton, favoriteButton);
+  actions.append(favoriteButton);
   card.append(imageButton, title, categoryLine, description, price, actions);
   return card;
 }
