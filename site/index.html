@@ -3,18 +3,80 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Наш магазин — старт</title>
+  <title>Ноутбук-Маркет — магазин ноутбуков</title>
   <link rel="stylesheet" href="./styles.css">
   <script src="./app.js" defer></script>
 </head>
 <body>
+  <header class="site-header">
+    <img src="./assets/shop.svg" width="56" height="56" alt="Логотип магазина">
+    <div>
+      <h1>Ноутбук-Маркет</h1>
+      <p class="tagline">Магазин ноутбуков: офисные, игровые, для учёбы</p>
+    </div>
+  </header>
+
   <main>
-    <img src="./assets/shop.svg" width="80" height="80" alt="Вывеска магазина">
-    <p class="eyebrow">AI-воркшоп · ИТМО</p>
-    <h1>Здесь будет ваш магазин</h1>
-    <p>Придумайте тему, добавьте каталог и соберите первую корзину.</p>
-    <p id="status" role="status">JavaScript ещё не запущен.</p>
-    <a href="https://github.com/itmo-workshop-09-11-2026/workshop-guide/blob/main/docs/task.md">Открыть задание</a>
+    <section class="catalog" aria-label="Каталог товаров">
+      <div class="catalog-toolbar">
+        <div class="view-tabs" role="tablist" aria-label="Разделы магазина">
+          <button type="button" id="tab-catalog" class="tab active" aria-pressed="true">Каталог</button>
+          <button type="button" id="tab-favorites" class="tab" aria-pressed="false">Избранное</button>
+        </div>
+
+        <div class="filters">
+          <label class="field">
+            <span>Поиск</span>
+            <input type="search" id="search-input" placeholder="Название ноутбука">
+          </label>
+          <label class="field">
+            <span>Категория</span>
+            <select id="category-select">
+              <option value="all">Все категории</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Сортировка</span>
+            <select id="sort-select">
+              <option value="none">Без сортировки</option>
+              <option value="asc">По цене ↑</option>
+              <option value="desc">По цене ↓</option>
+            </select>
+          </label>
+          <button type="button" id="reset-filters">Сбросить фильтры</button>
+        </div>
+      </div>
+
+      <p id="catalog-empty" class="catalog-empty" hidden>Ничего не найдено</p>
+      <div id="product-grid" class="product-grid"></div>
+    </section>
+
+    <section class="cart" aria-label="Корзина">
+      <h2>Корзина</h2>
+      <ul id="cart-list" class="cart-list"></ul>
+      <p id="cart-empty" class="cart-empty">Корзина пуста</p>
+
+      <div class="promo">
+        <label class="field">
+          <span>Промокод (скидка 10%)</span>
+          <input type="text" id="promo-input" placeholder="Например, LAPTOP10">
+        </label>
+        <button type="button" id="promo-apply">Применить</button>
+        <button type="button" id="promo-cancel" hidden>Отменить промокод</button>
+        <p id="promo-status" role="status"></p>
+      </div>
+
+      <p id="cart-total" class="cart-total" role="status" aria-live="polite">Итого: 0 ₽</p>
+    </section>
   </main>
+
+  <dialog id="product-dialog" class="product-dialog" aria-label="Карточка товара">
+    <button type="button" id="dialog-close" class="dialog-close" aria-label="Закрыть карточку товара">×</button>
+    <div id="dialog-content" class="dialog-content"></div>
+  </dialog>
+
+  <footer class="site-footer">
+    <p>Учебный проект · команда team07 · ИТМО</p>
+  </footer>
 </body>
 </html>
