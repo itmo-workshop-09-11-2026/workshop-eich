@@ -1116,8 +1116,22 @@ button:focus-visible,
   }
 
   .filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
     padding: 14px;
     border-radius: 15px;
+  }
+
+  .filters .field input,
+  .filters .field select {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .filters #reset-filters {
+    width: 100%;
+    min-height: 44px;
   }
 
   .product-grid {
