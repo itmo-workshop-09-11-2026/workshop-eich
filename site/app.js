@@ -83,12 +83,14 @@ function addToCart(id) {
     cart.push({ id, qty: 1 });
   }
   saveState();
+  renderCatalog();
   renderCart();
 }
 
 function removeFromCart(id) {
   cart = cart.filter((entry) => entry.id !== id);
   saveState();
+  renderCatalog();
   renderCart();
 }
 
@@ -100,6 +102,7 @@ function changeQty(id, delta) {
     cart = cart.filter((entry) => entry.id !== id);
   }
   saveState();
+  renderCatalog();
   renderCart();
 }
 
@@ -301,11 +304,42 @@ function buildProductCard(product) {
   const actions = document.createElement("div");
   actions.className = "product-actions";
 
-  const addButton = document.createElement("button");
-  addButton.type = "button";
-  addButton.textContent = "Добавить";
-  addButton.setAttribute("aria-label", "Добавить " + product.name + " в корзину");
-  addButton.addEventListener("click", () => addToCart(product.id));
+  // Кнопка «Добавить», когда товара нет в корзине, заменяется выбором
+  // количества после добавления и возвращается при количестве 0.
+  const cartItem = cart.find((entry) => entry.id === product.id);
+  const qtyInCart = cartItem ? cartItem.qty : 0;
+
+  if (qtyInCart === 0) {
+    const addButton = document.createElement("button");
+    addButton.type = "button";
+    addButton.className = "add-button";
+    addButton.textContent = "Добавить";
+    addButton.setAttribute("aria-label", "Добавить " + product.name + " в корзину");
+    addButton.addEventListener("click", () => addToCart(product.id));
+    actions.append(addButton);
+  } else {
+    const qtySelector = document.createElement("div");
+    qtySelector.className = "qty-selector";
+
+    const minusButton = document.createElement("button");
+    minusButton.type = "button";
+    minusButton.textContent = "−";
+    minusButton.setAttribute("aria-label", "Убрать один " + product.name);
+    minusButton.addEventListener("click", () => changeQty(product.id, -1));
+
+    const qtyLabel = document.createElement("span");
+    qtyLabel.textContent = qtyInCart + " шт.";
+    qtyLabel.setAttribute("aria-label", "В корзине " + qtyInCart + " шт.");
+
+    const plusButton = document.createElement("button");
+    plusButton.type = "button";
+    plusButton.textContent = "+";
+    plusButton.setAttribute("aria-label", "Добавить ещё один " + product.name);
+    plusButton.addEventListener("click", () => changeQty(product.id, 1));
+
+    qtySelector.append(minusButton, qtyLabel, plusButton);
+    actions.append(qtySelector);
+  }
 
   const favoriteButton = document.createElement("button");
   favoriteButton.type = "button";
